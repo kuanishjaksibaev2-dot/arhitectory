@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MERIDIAN &mdash; Architecture Studio</title>
+<meta name="description" content="Meridian Architecture — a studio for buildings that hold still." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          sand: '#f4f1ea',
+          ink: '#1a1a1a',
+          tint: '#e6e2d8',
+          void: '#111111',
+        },
+        fontFamily: {
+          display: ["'Cormorant Garamond'", 'serif'],
+          body: ["'Inter'", 'sans-serif'],
+          mono: ["'JetBrains Mono'", 'monospace'],
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  :root {
+    --sand: #f4f1ea;
+    --ink: #1a1a1a;
+    --tint: #e6e2d8;
+    --void: #111111;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+  }
+
+  body {
+    background-color: var(--sand);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  section {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  ::selection {
+    background-color: var(--ink);
+    color: var(--sand);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--sand);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .void :focus-visible {
+    outline: 2px solid var(--sand);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(35%) brightness(0.55) contrast(1.05);
+  }
+
+  .hero-veil {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(17, 17, 17, 0.55) 0%,
+      rgba(17, 17, 17, 0.25) 35%,
+      rgba(17, 17, 17, 0.35) 70%,
+      rgba(17, 17, 17, 0.65) 100%
+    );
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+
+  .hero-title .accent-line {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: none;
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: fadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .scroll-cue {
+    writing-mode: vertical-rl;
+    letter-spacing: 0.3em;
+  }
+
+  .scroll-cue::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 46px;
+    background: currentColor;
+    margin: 12px auto 0;
+    animation: scrollCue 2.2s ease-in-out infinite;
+    transform-origin: top;
+  }
+
+  @keyframes scrollCue {
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    40% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Gallery ---------- */
+
+  .tilt-card {
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.15s ease-out, box-shadow 0.4s ease;
+  }
+
+  .tilt-card:hover {
+    box-shadow: 0 40px 70px -25px rgba(26, 26, 26, 0.35);
+  }
+
+  .tilt-card .tilt-inner {
+    transform: translateZ(0);
+  }
+
+  .tilt-card img {
+    transform: translateZ(0);
+    transition: filter 0.6s ease;
+  }
+
+  .tilt-card:hover img {
+    filter: saturate(1.08) contrast(1.02);
+  }
+
+  .card-index {
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+  }
+
+  .card-shine {
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      rgba(244, 241, 234, 0.35),
+      transparent 55%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    mix-blend-mode: overlay;
+  }
+
+  .tilt-card:hover .card-shine {
+    opacity: 1;
+  }
+
+  /* ---------- Blueprint ---------- */
+
+  .blueprint-line {
+    stroke-dasharray: var(--len, 1000);
+    stroke-dashoffset: var(--len, 1000);
+    transition: stroke-dashoffset 3s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  .blueprint-visible .blueprint-line {
+    stroke-dashoffset: 0;
+  }
+
+  .blueprint-label {
+    opacity: 0;
+    transition: opacity 1.2s ease 2.2s;
+  }
+
+  .blueprint-visible .blueprint-label {
+    opacity: 1;
+  }
+
+  .grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .nav-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.35;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .nav-dot.active {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- Section navigation dots -->
+<nav
+  id="section-nav"
+  class="fixed right-6 md:right-10 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-5 text-ink mix-blend-difference"
+  aria-label="Section navigation"
+>
+  <button data-target="section-1" class="nav-dot active" aria-label="Go to introduction"></button>
+  <button data-target="section-2" class="nav-dot" aria-label="Go to gallery"></button>
+  <button data-target="section-3" class="nav-dot" aria-label="Go to blueprint"></button>
+</nav>
+
+<!-- ============ SECTION 1 — HERO ============ -->
+<section
+  id="section-1"
+  class="relative h-screen w-screen overflow-hidden flex items-center justify-center text-sand"
+>
+  <video
+    class="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop"
+  >
+    <source
+      src="https://assets.mixkit.co/videos/preview/mixkit-facade-of-a-modern-building-33613-large.mp4"
+      type="video/mp4"
+    />
+  </video>
+  <div class="hero-veil"></div>
+
+  <div class="grain"></div>
+
+  <div class="relative z-10 flex flex-col items-center px-6 text-center">
+    <span
+      class="fade-up font-mono text-[11px] md:text-xs tracking-[0.5em] uppercase text-sand/70 mb-6"
+      style="animation-delay: 0.1s"
+      >Est. 2011 &mdash; Studio No. 04</span
+    >
+    <h1 class="fade-up hero-title text-[15vw] md:text-[6.4vw] text-sand" style="animation-delay: 0.35s">
+      Meridian
+      <span class="accent-line text-[7vw] md:text-[2.6vw] text-sand/85">architecture &amp; form</span>
+    </h1>
+    <p
+      class="fade-up mt-8 max-w-md md:max-w-lg text-sm md:text-base font-light leading-relaxed text-sand/75 tracking-wide"
+      style="animation-delay: 0.6s"
+    >
+      We design buildings that hold their silence &mdash; structures shaped by
+      light, material, and the discipline of restraint.
+    </p>
+    <a
+      href="#section-2"
+      class="fade-up mt-10 inline-flex items-center gap-3 font-mono text-xs tracking-[0.3em] uppercase text-sand/80 border-b border-sand/40 pb-1 hover:text-sand hover:border-sand transition-colors duration-300"
+      style="animation-delay: 0.85s"
+    >
+      View Selected Works
+    </a>
+  </div>
+
+  <div
+    class="absolute bottom-8 left-6 md:left-10 z-10 text-sand/60 fade-up"
+    style="animation-delay: 1s"
+  >
+    <span class="scroll-cue font-mono text-[10px] uppercase">Scroll</span>
+  </div>
+
+  <div
+    class="absolute bottom-8 right-6 md:right-24 z-10 text-sand/60 font-mono text-[10px] tracking-[0.25em] uppercase fade-up"
+    style="animation-delay: 1.1s"
+  >
+    Almaty &mdash; Zurich &mdash; Kyoto
+  </div>
+</section>
+
+<!-- ============ SECTION 2 — GALLERY ============ -->
+<section
+  id="section-2"
+  class="relative h-screen w-screen bg-sand flex flex-col justify-center px-6 md:px-16 py-20 md:py-10"
+>
+  <div class="flex items-end justify-between mb-8 md:mb-12 flex-wrap gap-4">
+    <div>
+      <span class="font-mono text-[11px] tracking-[0.4em] uppercase text-ink/50"
+        >Selected Works &mdash; 02</span
+      >
+      <h2 class="font-display text-4xl md:text-6xl font-light text-ink mt-2">
+        Two Studies in Concrete &amp; Light
+      </h2>
+    </div>
+    <p class="max-w-xs text-sm text-ink/60 font-light leading-relaxed hidden md:block">
+      Tilt the cards. Every surface here was drawn before it was built &mdash;
+      light was a material, not an afterthought.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 flex-1 md:max-h-[60vh]">
+    <div
+      class="tilt-card relative rounded-sm overflow-hidden bg-tint cursor-pointer group"
+      data-tilt
+    >
+      <div class="tilt-inner relative h-full w-full">
+        <img
+          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1400&auto=format&fit=crop"
+          alt="Minimalist concrete residence with cantilevered upper floor and floor-to-ceiling glazing"
+          class="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/0 to-ink/10"
+        ></div>
+        <div class="card-shine absolute inset-0"></div>
+        <div class="absolute inset-0 flex flex-col justify-between p-6 md:p-8 text-sand">
+          <div class="flex items-center justify-between">
+            <span class="card-index text-xs tracking-[0.2em] text-sand/80">N&deg; 01 / II</span>
+            <span class="card-index text-xs tracking-[0.2em] text-sand/70">2023</span>
+          </div>
+          <div>
+            <h3 class="font-display text-2xl md:text-3xl font-medium">Casa Horizonte</h3>
+            <p class="text-xs md:text-sm text-sand/70 mt-1 font-light tracking-wide">
+              Private Residence &mdash; Almaty Foothills
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="tilt-card relative rounded-sm overflow-hidden bg-tint cursor-pointer group"
+      data-tilt
+    >
+      <div class="tilt-inner relative h-full w-full">
+        <img
+          src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=1400&auto=format&fit=crop"
+          alt="Interior staircase of a modern building with sculptural concrete curves and natural light"
+          class="absolute inset-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/0 to-ink/10"
+        ></div>
+        <div class="card-shine absolute inset-0"></div>
+        <div class="absolute inset-0 flex flex-col justify-between p-6 md:p-8 text-sand">
+          <div class="flex items-center justify-between">
+            <span class="card-index text-xs tracking-[0.2em] text-sand/80">N&deg; 02 / II</span>
+            <span class="card-index text-xs tracking-[0.2em] text-sand/70">2022</span>
+          </div>
+          <div>
+            <h3 class="font-display text-2xl md:text-3xl font-medium">Atelier Sable</h3>
+            <p class="text-xs md:text-sm text-sand/70 mt-1 font-light tracking-wide">
+              Cultural Pavilion &mdash; Kyoto Prefecture
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 3 — BLUEPRINT ============ -->
+<section
+  id="section-3"
+  class="void relative h-screen w-screen bg-void text-sand flex flex-col md:flex-row items-center justify-center px-6 md:px-16 py-16 gap-8 md:gap-16 overflow-hidden"
+>
+  <div class="grain"></div>
+
+  <div class="relative z-10 max-w-md text-center md:text-left order-2 md:order-1">
+    <span class="font-mono text-[11px] tracking-[0.4em] uppercase text-sand/50"
+      >Process &mdash; 03</span
+    >
+    <h2 class="font-display text-4xl md:text-5xl font-light mt-3 leading-tight">
+      Every Line Begins as a Drawing
+    </h2>
+    <p class="text-sm md:text-base text-sand/60 font-light leading-relaxed mt-6">
+      Casa Horizonte, first floor plan. Drawn by hand, refined in the studio,
+      and built exactly as measured &mdash; nothing added between the paper
+      and the site.
+    </p>
+    <div class="mt-8 flex items-center justify-center md:justify-start gap-6 font-mono text-[11px] text-sand/40 tracking-[0.15em] uppercase">
+      <span>Scale 1 : 100</span>
+      <span class="h-px w-8 bg-sand/30"></span>
+      <span>Sheet A&mdash;01</span>
+    </div>
+  </div>
+
+  <div class="relative z-10 order-1 md:order-2 w-full max-w-xl" id="blueprint-wrap">
+    <svg
+      viewBox="0 0 600 440"
+      class="w-full h-auto"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Architectural floor plan blueprint drawing"
+      role="img"
+    >
+      <rect x="10" y="10" width="580" height="420" stroke="#f4f1ea" stroke-width="1" opacity="0.25" />
+
+      <rect
+        class="blueprint-line"
+        style="--len:1360"
+        x="40" y="40" width="520" height="360"
+        stroke="#f4f1ea" stroke-width="1.5"
+      />
+
+      <line class="blueprint-line" style="--len:250" x1="220" y1="40" x2="220" y2="230" stroke="#f4f1ea" stroke-width="1.5" />
+      <line class="blueprint-line" style="--len:170" x1="220" y1="270" x2="220" y2="400" stroke="#f4f1ea" stroke-width="1.5" />
+
+      <line class="blueprint-line" style="--len:130" x1="220" y1="230" x2="350" y2="230" stroke="#f4f1ea" stroke-width="1.5" />
+      <line class="blueprint-line" style="--len:70" x1="390" y1="230" x2="420" y2="230" stroke="#f4f1ea" stroke-width="1.5" />
+
+      <line class="blueprint-line" style="--len:150" x1="420" y1="40" x2="420" y2="150" stroke="#f4f1ea" stroke-width="1.5" />
+      <line class="blueprint-line" style="--len:90" x1="420" y1="190" x2="420" y2="230" stroke="#f4f1ea" stroke-width="1.5" />
+      <line class="blueprint-line" style="--len:170" x1="420" y1="230" x2="420" y2="400" stroke="#f4f1ea" stroke-width="1.5" />
+
+      <path
+        class="blueprint-line"
+        style="--len:60"
+        d="M 220 230 A 40 40 0 0 1 260 270"
+        stroke="#f4f1ea" stroke-width="1.2"
+      />
+      <path
+        class="blueprint-line"
+        style="--len:60"
+        d="M 420 150 A 40 40 0 0 1 460 190"
+        stroke="#f4f1ea" stroke-width="1.2"
+      />
+      <path
+        class="blueprint-line"
+        style="--len:70"
+        d="M 390 230 A 30 30 0 0 0 420 190"
+        stroke="#f4f1ea" stroke-width="1.2"
+      />
+
+      <line class="blueprint-line" style="--len:70" x1="60" y1="70" x2="60" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:70" x1="80" y1="70" x2="80" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:70" x1="100" y1="70" x2="100" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:70" x1="120" y1="70" x2="120" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:70" x1="140" y1="70" x2="140" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:100" x1="55" y1="70" x2="155" y2="70" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:100" x1="55" y1="140" x2="155" y2="140" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+
+      <rect class="blueprint-line" style="--len:180" x="460" y="260" width="120" height="60" stroke="#f4f1ea" stroke-width="1" opacity="0.7" />
+      <line class="blueprint-line" style="--len:130" x1="460" y1="260" x2="580" y2="320" stroke="#f4f1ea" stroke-width="0.75" opacity="0.5" />
+      <line class="blueprint-line" style="--len:130" x1="580" y1="260" x2="460" y2="320" stroke="#f4f1ea" stroke-width="0.75" opacity="0.5" />
+
+      <line class="blueprint-line" style="--len:40" x1="240" y1="20" x2="240" y2="30" stroke="#f4f1ea" stroke-width="0.75" opacity="0.5" />
+      <line class="blueprint-line" style="--len:40" x1="220" y1="25" x2="420" y2="25" stroke="#f4f1ea" stroke-width="0.75" opacity="0.5" />
+      <line class="blueprint-line" style="--len:40" x1="400" y1="20" x2="400" y2="30" stroke="#f4f1ea" stroke-width="0.75" opacity="0.5" />
+
+      <text class="blueprint-label" x="90" y="180" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" opacity="0.6">TERRACE</text>
+      <text class="blueprint-label" x="270" y="130" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" opacity="0.6">LIVING ROOM</text>
+      <text class="blueprint-label" x="450" y="100" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" opacity="0.6">STUDY</text>
+      <text class="blueprint-label" x="270" y="330" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" opacity="0.6">BEDROOM</text>
+      <text class="blueprint-label" x="450" y="350" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="1.5" opacity="0.6">POOL DECK</text>
+      <text class="blueprint-label" x="200" y="18" fill="#f4f1ea" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1" opacity="0.45">6200 mm</text>
+    </svg>
+  </div>
+</section>
+
+<script>
+  (function () {
+    'use strict';
+
+    /* ---------------- Section nav dots ---------------- */
+    var navDots = Array.prototype.slice.call(
+      document.querySelectorAll('#section-nav .nav-dot')
+    );
+    var sections = navDots.map(function (dot) {
+      return document.getElementById(dot.getAttribute('data-target'));
+    });
+
+    navDots.forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        var target = document.getElementById(dot.getAttribute('data-target'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    var navObserver = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          var index = sections.indexOf(entry.target);
+          if (index === -1) return;
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            navDots.forEach(function (d) {
+              d.classList.remove('active');
+            });
+            navDots[index].classList.add('active');
+          }
+        });
+      },
+      { threshold: [0.5] }
+    );
+
+    sections.forEach(function (sec) {
+      if (sec) navObserver.observe(sec);
+    });
+
+    /* ---------------- 3D tilt effect on gallery cards ---------------- */
+    var tiltCards = document.querySelectorAll('[data-tilt]');
+    var MAX_TILT = 10;
+    var MAX_SCALE = 1.02;
+
+    tiltCards.forEach(function (card) {
+      var frame = null;
+
+      function handleMove(e) {
+        var rect = card.getBoundingClientRect();
+        var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        var relX = clientX - rect.left;
+        var relY = clientY - rect.top;
+
+        var px = relX / rect.width;
+        var py = relY / rect.height;
+
+        var tiltX = (0.5 - py) * (MAX_TILT * 2);
+        var tiltY = (px - 0.5) * (MAX_TILT * 2);
+
+        if (frame) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(function () {
+          card.style.transform =
+            'perspective(1000px) rotateX(' +
+            tiltX.toFixed(2) +
+            'deg) rotateY(' +
+            tiltY.toFixed(2) +
+            'deg) scale3d(' +
+            MAX_SCALE +
+            ',' +
+            MAX_SCALE +
+            ',' +
+            MAX_SCALE +
+            ')';
+          card.style.setProperty('--mx', (px * 100).toFixed(2) + '%');
+          card.style.setProperty('--my', (py * 100).toFixed(2) + '%');
+        });
+      }
+
+      function handleLeave() {
+        if (frame) cancelAnimationFrame(frame);
+        card.style.transform =
+          'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+      }
+
+      card.addEventListener('mousemove', handleMove);
+      card.addEventListener('mouseleave', handleLeave);
+      card.addEventListener('touchmove', handleMove, { passive: true });
+      card.addEventListener('touchend', handleLeave);
+    });
+
+    /* ---------------- Blueprint draw-on-scroll ---------------- */
+    var blueprintWrap = document.getElementById('blueprint-wrap');
+
+    if (blueprintWrap) {
+      var blueprintObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              blueprintWrap.classList.add('blueprint-visible');
+            } else {
+              blueprintWrap.classList.remove('blueprint-visible');
+            }
+          });
+        },
+        { threshold: 0.35 }
+      );
+      blueprintObserver.observe(blueprintWrap);
+    }
+
+    /* ---------------- Hero video: gracefully handle autoplay block ---------------- */
+    var heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+      var playPromise = heroVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function () {
+          var resumePlay = function () {
+            heroVideo.play();
+            document.removeEventListener('click', resumePlay);
+            document.removeEventListener('touchstart', resumePlay);
+          };
+          document.addEventListener('click', resumePlay, { once: true });
+          document.addEventListener('touchstart', resumePlay, { once: true });
+        });
+      }
+    }
+  })();
+</script>
+</body>
+</html>
