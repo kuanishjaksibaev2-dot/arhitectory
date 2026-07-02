@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Interior Study &mdash; Immersive Room</title>
+<title>Penthouse Interior &mdash; Panoramic Study</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -17,7 +17,7 @@
     overflow: hidden;
     width: 100%;
     height: 100%;
-    background: #111111;
+    background: #0d0b12;
     font-family: 'Helvetica Neue', Arial, sans-serif;
   }
 
@@ -36,13 +36,13 @@
   #loading-screen {
     position: fixed;
     inset: 0;
-    background: #14120f;
+    background: #14101c;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     z-index: 100;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 0.9s ease, visibility 0.9s ease;
   }
 
   #loading-screen.hidden {
@@ -54,8 +54,8 @@
   .loader-ring {
     width: 34px;
     height: 34px;
-    border: 1.5px solid rgba(244, 241, 234, 0.15);
-    border-top-color: rgba(244, 241, 234, 0.85);
+    border: 1.5px solid rgba(244, 233, 220, 0.15);
+    border-top-color: rgba(244, 233, 220, 0.85);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -65,11 +65,11 @@
   }
 
   .glass-card {
-    background: rgba(244, 241, 234, 0.08);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    border: 1px solid rgba(244, 241, 234, 0.18);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    background: rgba(244, 238, 228, 0.08);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(244, 238, 228, 0.18);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .fade-in {
@@ -96,7 +96,7 @@
 
 <div id="loading-screen">
   <div class="loader-ring"></div>
-  <p class="mt-5 text-[11px] tracking-[0.35em] uppercase text-[#f4f1ea]/50 font-light">Preparing Space</p>
+  <p class="mt-5 text-[11px] tracking-[0.35em] uppercase text-[#f4eee4]/50 font-light">Rendering the Skyline</p>
 </div>
 
 <canvas id="scene-canvas"></canvas>
@@ -104,19 +104,19 @@
 <!-- Top glass instruction card -->
 <div class="fixed top-6 left-1/2 -translate-x-1/2 z-20 fade-in" style="animation-delay: 0.6s;">
   <div class="glass-card rounded-full px-6 py-3 flex items-center gap-3">
-    <span class="w-1.5 h-1.5 rounded-full bg-[#f4f1ea] pulse-dot"></span>
-    <span class="text-[#f4f1ea] text-xs md:text-sm tracking-[0.15em] uppercase font-light whitespace-nowrap">
-      Drag to look around &middot; Scroll to zoom
+    <span class="w-1.5 h-1.5 rounded-full bg-[#f4eee4] pulse-dot"></span>
+    <span class="text-[#f4eee4] text-xs md:text-sm tracking-[0.15em] uppercase font-light whitespace-nowrap">
+      Drag to look around the penthouse
     </span>
   </div>
 </div>
 
 <!-- Bottom-left identity card -->
 <div class="fixed bottom-6 left-6 z-20 fade-in" style="animation-delay: 0.9s;">
-  <div class="glass-card rounded-2xl px-5 py-4 max-w-[220px]">
-    <p class="text-[10px] tracking-[0.3em] uppercase text-[#f4f1ea]/50 font-light mb-1">Interior Study</p>
-    <p class="text-[#f4f1ea] text-sm font-light leading-snug">Living Room, No. 04</p>
-    <p class="text-[#f4f1ea]/40 text-[10px] mt-2 font-light">Concrete &amp; warm plaster</p>
+  <div class="glass-card rounded-2xl px-5 py-4 max-w-[230px]">
+    <p class="text-[10px] tracking-[0.3em] uppercase text-[#f4eee4]/50 font-light mb-1">Penthouse Study</p>
+    <p class="text-[#f4eee4] text-sm font-light leading-snug">The Ridgeline Residence</p>
+    <p class="text-[#f4eee4]/40 text-[10px] mt-2 font-light">Concrete, glass &amp; mountain twilight</p>
   </div>
 </div>
 
@@ -125,7 +125,7 @@
   <div class="glass-card rounded-full w-14 h-14 flex items-center justify-center">
     <svg id="compass-needle" width="20" height="20" viewBox="0 0 20 20" style="transition: transform 0.15s ease-out;">
       <polygon points="10,1 13,10 10,8 7,10" fill="#e2725b" />
-      <polygon points="10,19 13,10 10,12 7,10" fill="#f4f1ea" fill-opacity="0.6" />
+      <polygon points="10,19 13,10 10,12 7,10" fill="#f4eee4" fill-opacity="0.6" />
     </svg>
   </div>
 </div>
@@ -141,22 +141,22 @@
     var loadingScreen = document.getElementById('loading-screen');
     var compassNeedle = document.getElementById('compass-needle');
 
-    var ROOM_WIDTH = 30;
-    var ROOM_HEIGHT = 12;
-    var ROOM_DEPTH = 30;
-    var EYE_HEIGHT = 1.6;
+    var ROOM_WIDTH = 40;
+    var ROOM_HEIGHT = 14;
+    var ROOM_DEPTH = 40;
+    var EYE_HEIGHT = 1.8;
+    var WINDOW_WALL_Z = -ROOM_DEPTH / 2; // -20, the panoramic long wall
 
     var scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1c1a17);
-    scene.fog = new THREE.Fog(0x1c1a17, 14, 34);
+    scene.background = new THREE.Color(0x18131f);
 
     var camera = new THREE.PerspectiveCamera(
-      62,
+      60,
       window.innerWidth / window.innerHeight,
       0.1,
-      200
+      500
     );
-    camera.position.set(0, EYE_HEIGHT, 4);
+    camera.position.set(0, EYE_HEIGHT, 6);
 
     var renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -169,17 +169,16 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.05;
+    renderer.toneMappingExposure = 1.1;
     renderer.physicallyCorrectLights = true;
 
     /* ---------------------------------------------------------
-       Orbit controls — configured as a "look around" rig.
-       Target sits just in front of the camera so dragging
-       orbits almost in place (a first-person look), while a
-       tight zoom range only lets the user push in slightly.
+       Orbit controls — a "look around" rig. The target sits a
+       short distance in front of the camera, toward the window,
+       so the very first frame faces the mountain view.
     --------------------------------------------------------- */
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, EYE_HEIGHT, 0);
+    controls.target.set(0, EYE_HEIGHT, camera.position.z - 2.2);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
     controls.rotateSpeed = 0.45;
@@ -188,99 +187,238 @@
     controls.enableZoom = true;
     controls.minDistance = 0.5;
     controls.maxDistance = 6;
-    controls.minPolarAngle = 0.15;
-    controls.maxPolarAngle = Math.PI - 0.15;
+    controls.minPolarAngle = 0.12;
+    controls.maxPolarAngle = Math.PI - 0.12;
     controls.update();
 
     /* ---------------------------------------------------------
-       Materials — matte plaster / concrete palette
+       Interior materials — matte plaster / warm concrete
     --------------------------------------------------------- */
-    var wallColor = 0xe6e2d8;
-    var floorColor = 0x36302a;
-    var ceilingColor = 0xf4f1ea;
-    var trimColor = 0xd8d2c4;
-
     var wallMaterial = new THREE.MeshStandardMaterial({
-      color: wallColor,
-      roughness: 0.95,
+      color: 0xe9e3d6,
+      roughness: 0.92,
       metalness: 0.02,
     });
 
     var floorMaterial = new THREE.MeshStandardMaterial({
-      color: floorColor,
-      roughness: 0.75,
-      metalness: 0.05,
+      color: 0x3a332b,
+      roughness: 0.55,
+      metalness: 0.08,
     });
 
     var ceilingMaterial = new THREE.MeshStandardMaterial({
-      color: ceilingColor,
+      color: 0xf4efe6,
       roughness: 1.0,
       metalness: 0.0,
     });
 
-    /* ---------------------------------------------------------
-       Room shell — large inverted box, camera lives inside it
-    --------------------------------------------------------- */
-    var roomGeometry = new THREE.BoxGeometry(ROOM_WIDTH, ROOM_HEIGHT, ROOM_DEPTH);
-
-    var roomMaterials = [
-      wallMaterial, // +x  right wall
-      wallMaterial, // -x  left wall
-      ceilingMaterial, // +y ceiling
-      floorMaterial, // -y floor
-      wallMaterial, // +z  near wall (behind camera start)
-      wallMaterial, // -z  far wall
-    ];
-
-    roomMaterials.forEach(function (mat) {
-      mat.side = THREE.BackSide;
+    var frameMaterial = new THREE.MeshStandardMaterial({
+      color: 0x0b0b0d,
+      roughness: 0.28,
+      metalness: 0.85,
     });
 
-    var room = new THREE.Mesh(roomGeometry, roomMaterials);
-    room.receiveShadow = true;
-    scene.add(room);
-
-    /* Subtle skirting / trim line where the far wall meets the floor */
-    var trimGeometry = new THREE.BoxGeometry(ROOM_WIDTH - 0.2, 0.14, 0.06);
-    var trimMaterial = new THREE.MeshStandardMaterial({
-      color: trimColor,
-      roughness: 0.6,
-    });
-    var trimFar = new THREE.Mesh(trimGeometry, trimMaterial);
-    trimFar.position.set(0, 0.07, -ROOM_DEPTH / 2 + 0.03);
-    scene.add(trimFar);
-
-    var trimNear = trimFar.clone();
-    trimNear.position.set(0, 0.07, ROOM_DEPTH / 2 - 0.03);
-    scene.add(trimNear);
-
-    var trimSideGeometry = new THREE.BoxGeometry(0.06, 0.14, ROOM_DEPTH - 0.2);
-    var trimLeft = new THREE.Mesh(trimSideGeometry, trimMaterial);
-    trimLeft.position.set(-ROOM_WIDTH / 2 + 0.03, 0.07, 0);
-    scene.add(trimLeft);
-
-    var trimRight = trimLeft.clone();
-    trimRight.position.set(ROOM_WIDTH / 2 - 0.03, 0.07, 0);
-    scene.add(trimRight);
+    function addPanel(width, height, depth, material, x, y, z, castShadow, receiveShadow) {
+      var geo = new THREE.BoxGeometry(width, height, depth);
+      var mesh = new THREE.Mesh(geo, material);
+      mesh.position.set(x, y, z);
+      mesh.castShadow = castShadow !== false;
+      mesh.receiveShadow = receiveShadow !== false;
+      scene.add(mesh);
+      return mesh;
+    }
 
     /* ---------------------------------------------------------
-       Lighting — ambient wash + two warm overhead architectural
-       lamps that cast soft, believable shadows.
+       Room shell — floor, ceiling, three solid walls. The
+       fourth (window) wall is built separately below.
     --------------------------------------------------------- */
-    var ambientLight = new THREE.AmbientLight(0x6a6458, 0.55);
+    var floor = addPanel(ROOM_WIDTH, 0.2, ROOM_DEPTH, floorMaterial, 0, -0.1, 0, false, true);
+    var ceiling = addPanel(ROOM_WIDTH, 0.2, ROOM_DEPTH, ceilingMaterial, 0, ROOM_HEIGHT + 0.1, 0, false, true);
+
+    var leftWall = addPanel(0.2, ROOM_HEIGHT, ROOM_DEPTH, wallMaterial, -ROOM_WIDTH / 2 - 0.1, ROOM_HEIGHT / 2, 0, false, true);
+    var rightWall = addPanel(0.2, ROOM_HEIGHT, ROOM_DEPTH, wallMaterial, ROOM_WIDTH / 2 + 0.1, ROOM_HEIGHT / 2, 0, false, true);
+    var backWall = addPanel(ROOM_WIDTH, ROOM_HEIGHT, 0.2, wallMaterial, 0, ROOM_HEIGHT / 2, ROOM_DEPTH / 2 + 0.1, false, true);
+
+    /* Skirting trim along the solid walls */
+    var trimMaterial = new THREE.MeshStandardMaterial({ color: 0xd6cfbe, roughness: 0.6 });
+    addPanel(ROOM_WIDTH - 0.4, 0.12, 0.05, trimMaterial, 0, 0.06, ROOM_DEPTH / 2 - 0.02, false, false);
+    addPanel(0.05, 0.12, ROOM_DEPTH - 0.4, trimMaterial, -ROOM_WIDTH / 2 + 0.02, 0.06, 0, false, false);
+    addPanel(0.05, 0.12, ROOM_DEPTH - 0.4, trimMaterial, ROOM_WIDTH / 2 - 0.02, 0.06, 0, false, false);
+
+    /* ---------------------------------------------------------
+       Panoramic window wall — floor-to-near-ceiling curtain
+       glass with a minimalist black steel mullion grid.
+    --------------------------------------------------------- */
+    var openingWidth = 37;
+    var openingBottom = 0.35;
+    var openingHeight = 12.4;
+    var openingTop = openingBottom + openingHeight;
+    var sideWidth = (ROOM_WIDTH - openingWidth) / 2;
+
+    /* Header beam above the glazing */
+    addPanel(ROOM_WIDTH, ROOM_HEIGHT - openingTop, 0.3, wallMaterial, 0, (openingTop + ROOM_HEIGHT) / 2, WINDOW_WALL_Z, false, true);
+    /* Footer / sill band below the glazing */
+    addPanel(ROOM_WIDTH, openingBottom, 0.3, wallMaterial, 0, openingBottom / 2, WINDOW_WALL_Z, false, true);
+    /* Side pilasters flanking the glazing */
+    addPanel(sideWidth, openingHeight, 0.3, wallMaterial, -(openingWidth / 2 + sideWidth / 2), openingBottom + openingHeight / 2, WINDOW_WALL_Z, false, true);
+    addPanel(sideWidth, openingHeight, 0.3, wallMaterial, (openingWidth / 2 + sideWidth / 2), openingBottom + openingHeight / 2, WINDOW_WALL_Z, false, true);
+
+    /* Outer steel frame around the opening */
+    addPanel(openingWidth + 0.3, 0.22, 0.28, frameMaterial, 0, openingTop, WINDOW_WALL_Z, false, false);
+    addPanel(openingWidth + 0.3, 0.22, 0.28, frameMaterial, 0, openingBottom, WINDOW_WALL_Z, false, false);
+    addPanel(0.22, openingHeight + 0.3, 0.28, frameMaterial, -openingWidth / 2, openingBottom + openingHeight / 2, WINDOW_WALL_Z, false, false);
+    addPanel(0.22, openingHeight + 0.3, 0.28, frameMaterial, openingWidth / 2, openingBottom + openingHeight / 2, WINDOW_WALL_Z, false, false);
+
+    /* Glass pane spanning the full opening */
+    var glassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xcfe3ee,
+      transparent: true,
+      opacity: 0.14,
+      roughness: 0.04,
+      metalness: 0.15,
+      side: THREE.DoubleSide,
+    });
+    var glassGeometry = new THREE.PlaneGeometry(openingWidth, openingHeight);
+    var glassPane = new THREE.Mesh(glassGeometry, glassMaterial);
+    glassPane.position.set(0, openingBottom + openingHeight / 2, WINDOW_WALL_Z + 0.06);
+    scene.add(glassPane);
+
+    /* Vertical mullions */
+    var verticalBayCount = 9;
+    var verticalSpacing = openingWidth / verticalBayCount;
+    for (var v = 1; v < verticalBayCount; v++) {
+      var vx = -openingWidth / 2 + verticalSpacing * v;
+      addPanel(0.07, openingHeight, 0.14, frameMaterial, vx, openingBottom + openingHeight / 2, WINDOW_WALL_Z + 0.09, false, false);
+    }
+
+    /* Horizontal mullions dividing the glazing into three bands */
+    var horizontalBandCount = 3;
+    var horizontalSpacing = openingHeight / horizontalBandCount;
+    for (var h = 1; h < horizontalBandCount; h++) {
+      var hy = openingBottom + horizontalSpacing * h;
+      addPanel(openingWidth, 0.07, 0.14, frameMaterial, 0, hy, WINDOW_WALL_Z + 0.09, false, false);
+    }
+
+    /* ---------------------------------------------------------
+       Canvas-generated twilight sky texture
+    --------------------------------------------------------- */
+    function createSkyTexture() {
+      var canvasEl = document.createElement('canvas');
+      canvasEl.width = 1024;
+      canvasEl.height = 512;
+      var ctx = canvasEl.getContext('2d');
+
+      var gradient = ctx.createLinearGradient(0, 0, 0, canvasEl.height);
+      gradient.addColorStop(0, '#140a2e');
+      gradient.addColorStop(0.28, '#341b4d');
+      gradient.addColorStop(0.52, '#6a3862');
+      gradient.addColorStop(0.72, '#c45c58');
+      gradient.addColorStop(0.86, '#e78a4e');
+      gradient.addColorStop(1, '#f7c17a');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+      /* Sun glow near the horizon */
+      var sunX = canvasEl.width * 0.62;
+      var sunY = canvasEl.height * 0.74;
+      var glow = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 260);
+      glow.addColorStop(0, 'rgba(255, 226, 170, 0.95)');
+      glow.addColorStop(0.35, 'rgba(255, 176, 120, 0.5)');
+      glow.addColorStop(1, 'rgba(255, 176, 120, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+      var sunCore = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 60);
+      sunCore.addColorStop(0, 'rgba(255, 244, 220, 0.95)');
+      sunCore.addColorStop(1, 'rgba(255, 244, 220, 0)');
+      ctx.fillStyle = sunCore;
+      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
+
+      /* Faint stars in the upper twilight band */
+      for (var i = 0; i < 140; i++) {
+        var sx = Math.random() * canvasEl.width;
+        var sy = Math.random() * canvasEl.height * 0.42;
+        var alpha = Math.random() * 0.6;
+        ctx.fillStyle = 'rgba(255,255,255,' + alpha.toFixed(2) + ')';
+        var size = Math.random() * 1.4;
+        ctx.fillRect(sx, sy, size, size);
+      }
+
+      /* A few soft horizontal cloud bands */
+      for (var c = 0; c < 5; c++) {
+        var cy = canvasEl.height * (0.4 + c * 0.07);
+        var cGrad = ctx.createLinearGradient(0, cy - 14, 0, cy + 14);
+        cGrad.addColorStop(0, 'rgba(255, 200, 170, 0)');
+        cGrad.addColorStop(0.5, 'rgba(255, 210, 185, 0.16)');
+        cGrad.addColorStop(1, 'rgba(255, 200, 170, 0)');
+        ctx.fillStyle = cGrad;
+        ctx.fillRect(0, cy - 14, canvasEl.width, 28);
+      }
+
+      var texture = new THREE.CanvasTexture(canvasEl);
+      texture.encoding = THREE.sRGBEncoding;
+      return texture;
+    }
+
+    var skyTexture = createSkyTexture();
+    var skyMaterial = new THREE.MeshBasicMaterial({ map: skyTexture, fog: false });
+    var skyGeometry = new THREE.PlaneGeometry(420, 220);
+    var skyMesh = new THREE.Mesh(skyGeometry, skyMaterial);
+    skyMesh.position.set(0, 60, -170);
+    scene.add(skyMesh);
+
+    /* ---------------------------------------------------------
+       Layered mountain silhouettes for atmospheric depth
+    --------------------------------------------------------- */
+    function buildMountainRange(zPos, baseColor, peakHeight, jaggedness, baseY) {
+      var shape = new THREE.Shape();
+      var totalWidth = 360;
+      var segments = 26;
+      var startX = -totalWidth / 2;
+
+      shape.moveTo(startX, baseY - 6);
+      shape.lineTo(startX, baseY + peakHeight * 0.25);
+
+      for (var i = 0; i <= segments; i++) {
+        var x = startX + (totalWidth / segments) * i;
+        var ridge = Math.sin(i * 0.9) * jaggedness + Math.sin(i * 2.3) * (jaggedness * 0.35);
+        var y = baseY + peakHeight * 0.4 + Math.abs(ridge) + Math.random() * jaggedness * 0.4;
+        shape.lineTo(x, y);
+      }
+
+      shape.lineTo(totalWidth / 2, baseY - 6);
+      shape.closePath();
+
+      var geometry = new THREE.ShapeGeometry(shape);
+      var material = new THREE.MeshBasicMaterial({ color: baseColor, side: THREE.DoubleSide, fog: false });
+      var mesh = new THREE.Mesh(geometry, material);
+      mesh.position.set(0, 0, zPos);
+      scene.add(mesh);
+      return mesh;
+    }
+
+    buildMountainRange(-95, 0x8d7f92, 22, 3.2, 4);
+    buildMountainRange(-72, 0x5c4a68, 26, 4.2, 2);
+    buildMountainRange(-50, 0x2c2138, 30, 5.4, 0);
+
+    /* ---------------------------------------------------------
+       Interior lighting — ambient wash, two overhead lamps and
+       a warm point light suggesting sunset spill near the glass.
+    --------------------------------------------------------- */
+    var ambientLight = new THREE.AmbientLight(0x726a72, 0.5);
     scene.add(ambientLight);
 
-    var hemiLight = new THREE.HemisphereLight(0xf4f1ea, 0x2a241d, 0.35);
+    var hemiLight = new THREE.HemisphereLight(0xd9c9c2, 0x241f2c, 0.35);
     scene.add(hemiLight);
 
     function createOverheadLamp(x, z, intensity, color) {
       var group = new THREE.Group();
 
-      var fixtureGeo = new THREE.CylinderGeometry(0.32, 0.4, 0.28, 24);
+      var fixtureGeo = new THREE.CylinderGeometry(0.34, 0.42, 0.26, 24);
       var fixtureMat = new THREE.MeshStandardMaterial({
-        color: 0x2a2620,
+        color: 0x231f1a,
         roughness: 0.4,
-        metalness: 0.4,
+        metalness: 0.5,
       });
       var fixture = new THREE.Mesh(fixtureGeo, fixtureMat);
       fixture.position.set(x, ROOM_HEIGHT - 0.35, z);
@@ -291,71 +429,50 @@
       var bulbMat = new THREE.MeshStandardMaterial({
         color: color,
         emissive: color,
-        emissiveIntensity: 1.4,
+        emissiveIntensity: 1.5,
         roughness: 0.3,
       });
       var bulb = new THREE.Mesh(bulbGeo, bulbMat);
-      bulb.position.set(x, ROOM_HEIGHT - 0.55, z);
+      bulb.position.set(x, ROOM_HEIGHT - 0.56, z);
       group.add(bulb);
 
-      var light = new THREE.PointLight(color, intensity, 22, 2);
-      light.position.set(x, ROOM_HEIGHT - 0.55, z);
+      var light = new THREE.PointLight(color, intensity, 24, 2);
+      light.position.set(x, ROOM_HEIGHT - 0.56, z);
       light.castShadow = true;
       light.shadow.mapSize.width = 1024;
       light.shadow.mapSize.height = 1024;
       light.shadow.bias = -0.0025;
       light.shadow.camera.near = 0.2;
-      light.shadow.camera.far = 24;
+      light.shadow.camera.far = 26;
       group.add(light);
 
       scene.add(group);
       return group;
     }
 
-    createOverheadLamp(-4.5, -5, 9.5, 0xffe3bd);
-    createOverheadLamp(4.5, 3, 9.5, 0xffe3bd);
+    createOverheadLamp(-9, 6, 9, 0xffe6c4);
+    createOverheadLamp(9, 6, 9, 0xffe6c4);
 
-    /* A gentle spotlight to define the seating area and add depth */
-    var spot = new THREE.SpotLight(0xfff0da, 6, 18, Math.PI / 6, 0.5, 1.2);
-    spot.position.set(-2.5, ROOM_HEIGHT - 0.6, -2);
-    spot.target.position.set(-1.5, 0, -3);
-    spot.castShadow = true;
-    spot.shadow.mapSize.width = 1024;
-    spot.shadow.mapSize.height = 1024;
-    spot.shadow.bias = -0.003;
-    scene.add(spot);
-    scene.add(spot.target);
+    /* Warm sunset spill just inside the glazing */
+    var sunsetSpill = new THREE.PointLight(0xff9a5a, 3.4, 20, 2);
+    sunsetSpill.position.set(4, 3.6, WINDOW_WALL_Z + 3);
+    scene.add(sunsetSpill);
+
+    var sunsetSpill2 = new THREE.PointLight(0xffb98a, 2.2, 16, 2);
+    sunsetSpill2.position.set(-6, 2.4, WINDOW_WALL_Z + 4);
+    scene.add(sunsetSpill2);
 
     /* ---------------------------------------------------------
-       Furniture — grounds the space so scale reads immediately
+       Furniture — a lounge composition facing the window
     --------------------------------------------------------- */
     var furnitureGroup = new THREE.Group();
 
-    var fabricMaterial = new THREE.MeshStandardMaterial({
-      color: 0x8a7c6a,
-      roughness: 0.9,
-      metalness: 0.0,
-    });
+    var fabricMaterial = new THREE.MeshStandardMaterial({ color: 0x8a7c6a, roughness: 0.9 });
+    var woodMaterial = new THREE.MeshStandardMaterial({ color: 0x4d3b2c, roughness: 0.5, metalness: 0.05 });
+    var metalMaterial = new THREE.MeshStandardMaterial({ color: 0x1f1c19, roughness: 0.3, metalness: 0.75 });
+    var stoneMaterial = new THREE.MeshStandardMaterial({ color: 0xcfc7b6, roughness: 0.55, metalness: 0.1 });
 
-    var woodMaterial = new THREE.MeshStandardMaterial({
-      color: 0x5b4636,
-      roughness: 0.55,
-      metalness: 0.05,
-    });
-
-    var metalMaterial = new THREE.MeshStandardMaterial({
-      color: 0x2c2a26,
-      roughness: 0.35,
-      metalness: 0.7,
-    });
-
-    var stoneMaterial = new THREE.MeshStandardMaterial({
-      color: 0xcfc8b8,
-      roughness: 0.6,
-      metalness: 0.1,
-    });
-
-    function addMesh(geometry, material, x, y, z, castShadow, receiveShadow) {
+    function addFurniture(geometry, material, x, y, z, castShadow, receiveShadow) {
       var mesh = new THREE.Mesh(geometry, material);
       mesh.position.set(x, y, z);
       mesh.castShadow = castShadow !== false;
@@ -364,93 +481,65 @@
       return mesh;
     }
 
-    /* Low sofa */
-    var sofaBase = addMesh(new THREE.BoxGeometry(3.4, 0.55, 1.2), fabricMaterial, -3, 0.28, -3.5);
-    var sofaBack = addMesh(new THREE.BoxGeometry(3.4, 0.75, 0.28), fabricMaterial, -3, 0.75, -4.04);
-    var sofaArmL = addMesh(new THREE.BoxGeometry(0.28, 0.7, 1.2), fabricMaterial, -4.56, 0.63, -3.5);
-    var sofaArmR = addMesh(new THREE.BoxGeometry(0.28, 0.7, 1.2), fabricMaterial, -1.44, 0.63, -3.5);
+    /* Low sofa facing the panoramic view */
+    addFurniture(new THREE.BoxGeometry(3.6, 0.55, 1.2), fabricMaterial, 0, 0.28, 1);
+    addFurniture(new THREE.BoxGeometry(3.6, 0.75, 0.26), fabricMaterial, 0, 0.75, 1.56);
+    addFurniture(new THREE.BoxGeometry(0.26, 0.7, 1.2), fabricMaterial, -1.78, 0.63, 1);
+    addFurniture(new THREE.BoxGeometry(0.26, 0.7, 1.2), fabricMaterial, 1.78, 0.63, 1);
     for (var c = 0; c < 3; c++) {
-      addMesh(
-        new THREE.BoxGeometry(0.85, 0.34, 1.02),
-        fabricMaterial,
-        -4.1 + c * 1.1,
-        0.58,
-        -3.5
-      );
+      addFurniture(new THREE.BoxGeometry(1.0, 0.32, 1.0), fabricMaterial, -1.05 + c * 1.05, 0.58, 0.98);
     }
 
     /* Coffee table */
-    var tableTop = addMesh(new THREE.CylinderGeometry(0.85, 0.85, 0.06, 32), stoneMaterial, -3, 0.42, -1.6);
-    var tableLegGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.38, 12);
+    addFurniture(new THREE.CylinderGeometry(0.9, 0.9, 0.06, 32), stoneMaterial, 0, 0.42, -1.3);
     var legOffsets = [
-      [-0.55, -0.2],
-      [0.55, -0.2],
-      [-0.55, 0.2],
-      [0.55, 0.2],
+      [-0.58, -0.2],
+      [0.58, -0.2],
+      [-0.58, 0.2],
+      [0.58, 0.2],
     ];
+    var tableLegGeo = new THREE.CylinderGeometry(0.03, 0.03, 0.38, 12);
     legOffsets.forEach(function (off) {
-      addMesh(tableLegGeo, metalMaterial, -3 + off[0], 0.19, -1.6 + off[1]);
+      addFurniture(tableLegGeo, metalMaterial, off[0], 0.19, -1.3 + off[1]);
     });
 
-    /* Floor lamp beside sofa */
-    addMesh(new THREE.CylinderGeometry(0.02, 0.02, 1.9, 12), metalMaterial, -5.1, 0.95, -4.6);
-    var lampShade = addMesh(new THREE.ConeGeometry(0.3, 0.42, 24, 1, true), fabricMaterial, -5.1, 1.95, -4.6);
-    var lampGlow = new THREE.PointLight(0xffdca8, 1.4, 6, 2);
-    lampGlow.position.set(-5.1, 1.8, -4.6);
-    furnitureGroup.add(lampGlow);
-    addMesh(new THREE.CylinderGeometry(0.25, 0.25, 0.03, 24), metalMaterial, -5.1, 0.02, -4.6);
-
-    /* Area rug */
-    var rugGeo = new THREE.CircleGeometry(2.6, 48);
-    var rugMat = new THREE.MeshStandardMaterial({
-      color: 0xc7b9a3,
-      roughness: 1.0,
-    });
-    var rug = new THREE.Mesh(rugGeo, rugMat);
+    /* Area rug beneath the seating */
+    var rugMat = new THREE.MeshStandardMaterial({ color: 0xc7bba5, roughness: 1.0 });
+    var rug = new THREE.Mesh(new THREE.CircleGeometry(2.8, 48), rugMat);
     rug.rotation.x = -Math.PI / 2;
-    rug.position.set(-3, 0.015, -2.6);
+    rug.position.set(0, 0.015, 0);
     rug.receiveShadow = true;
     furnitureGroup.add(rug);
 
-    /* Console + wall art on the far wall */
-    addMesh(new THREE.BoxGeometry(3, 0.7, 0.5), woodMaterial, 4.5, 0.35, -ROOM_DEPTH / 2 + 0.4);
-    var frameOuter = addMesh(new THREE.BoxGeometry(2, 1.3, 0.06), woodMaterial, 4.5, 2.4, -ROOM_DEPTH / 2 + 0.12);
-    var frameInner = addMesh(new THREE.BoxGeometry(1.78, 1.08, 0.03), new THREE.MeshStandardMaterial({
-      color: 0x726556,
-      roughness: 0.85,
-    }), 4.5, 2.4, -ROOM_DEPTH / 2 + 0.16);
+    /* Floor lamp beside the sofa */
+    addFurniture(new THREE.CylinderGeometry(0.02, 0.02, 1.9, 12), metalMaterial, 3.4, 0.95, 1.6);
+    addFurniture(new THREE.ConeGeometry(0.3, 0.42, 24, 1, true), fabricMaterial, 3.4, 1.95, 1.6);
+    var lampGlow = new THREE.PointLight(0xffdca8, 1.2, 6, 2);
+    lampGlow.position.set(3.4, 1.8, 1.6);
+    furnitureGroup.add(lampGlow);
+    addFurniture(new THREE.CylinderGeometry(0.25, 0.25, 0.03, 24), metalMaterial, 3.4, 0.02, 1.6);
 
-    /* A second, smaller framed piece */
-    addMesh(new THREE.BoxGeometry(1.1, 1.5, 0.05), woodMaterial, 2.1, 2.1, -ROOM_DEPTH / 2 + 0.11);
-    addMesh(new THREE.BoxGeometry(0.92, 1.32, 0.03), new THREE.MeshStandardMaterial({
-      color: 0x9c8d78,
-      roughness: 0.9,
-    }), 2.1, 2.1, -ROOM_DEPTH / 2 + 0.15);
+    /* Sideboard console against the back wall */
+    addFurniture(new THREE.BoxGeometry(3.2, 0.7, 0.5), woodMaterial, -9, 0.35, ROOM_DEPTH / 2 - 0.4);
+    addFurniture(new THREE.BoxGeometry(2, 1.3, 0.06), woodMaterial, -9, 2.3, ROOM_DEPTH / 2 - 0.12);
+    addFurniture(new THREE.BoxGeometry(1.78, 1.08, 0.03), new THREE.MeshStandardMaterial({ color: 0x726556, roughness: 0.85 }), -9, 2.3, ROOM_DEPTH / 2 - 0.16);
 
-    /* Dining-style bench near the right wall for scale variety */
-    addMesh(new THREE.BoxGeometry(0.5, 0.5, 1.8), woodMaterial, ROOM_WIDTH / 2 - 1.2, 0.25, 3);
-    addMesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), metalMaterial, ROOM_WIDTH / 2 - 1.4, 0.25, 2.2);
-    addMesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), metalMaterial, ROOM_WIDTH / 2 - 1.0, 0.25, 2.2);
-    addMesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), metalMaterial, ROOM_WIDTH / 2 - 1.4, 0.25, 3.8);
-    addMesh(new THREE.BoxGeometry(0.06, 0.5, 0.06), metalMaterial, ROOM_WIDTH / 2 - 1.0, 0.25, 3.8);
-
-    /* Tall potted plant for organic contrast */
-    var potGeo = new THREE.CylinderGeometry(0.35, 0.28, 0.5, 20);
-    var potMat = new THREE.MeshStandardMaterial({ color: 0x3f3a33, roughness: 0.8 });
-    addMesh(potGeo, potMat, 6.5, 0.25, -6.5);
-    var stemMat = new THREE.MeshStandardMaterial({ color: 0x4a4030, roughness: 0.9 });
+    /* Tall potted plant near the glazing corner */
+    var potMat = new THREE.MeshStandardMaterial({ color: 0x352f29, roughness: 0.8 });
+    addFurniture(new THREE.CylinderGeometry(0.36, 0.29, 0.5, 20), potMat, -16, 0.25, -17);
+    var stemMat = new THREE.MeshStandardMaterial({ color: 0x453b2c, roughness: 0.9 });
+    var leafMat = new THREE.MeshStandardMaterial({ color: 0x556644, roughness: 0.7 });
     for (var s = 0; s < 5; s++) {
-      var stem = addMesh(
+      var stem = addFurniture(
         new THREE.CylinderGeometry(0.015, 0.02, 1.4 + Math.random() * 0.6, 6),
         stemMat,
-        6.5 + (Math.random() - 0.5) * 0.4,
+        -16 + (Math.random() - 0.5) * 0.4,
         1.4,
-        -6.5 + (Math.random() - 0.5) * 0.4
+        -17 + (Math.random() - 0.5) * 0.4
       );
       stem.rotation.z = (Math.random() - 0.5) * 0.35;
       stem.rotation.x = (Math.random() - 0.5) * 0.35;
-      var leafMat = new THREE.MeshStandardMaterial({ color: 0x5a6b4a, roughness: 0.7 });
-      addMesh(
+      addFurniture(
         new THREE.SphereGeometry(0.22, 8, 8),
         leafMat,
         stem.position.x + Math.sin(stem.rotation.z) * 0.6,
@@ -493,8 +582,8 @@
       requestAnimationFrame(animate);
       var elapsed = clock.getElapsedTime();
 
-      /* Gentle flicker-free breathing on the lamp glow for subtle life */
-      lampGlow.intensity = 1.4 + Math.sin(elapsed * 1.3) * 0.06;
+      lampGlow.intensity = 1.2 + Math.sin(elapsed * 1.3) * 0.05;
+      sunsetSpill.intensity = 3.4 + Math.sin(elapsed * 0.4) * 0.2;
 
       controls.update();
       updateCompass();
@@ -513,7 +602,6 @@
       }, 400);
     });
 
-    /* Fallback in case 'load' already fired before listener attached */
     if (document.readyState === 'complete') {
       setTimeout(function () {
         loadingScreen.classList.add('hidden');
